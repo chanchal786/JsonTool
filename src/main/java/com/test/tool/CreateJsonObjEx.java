@@ -10,9 +10,49 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
 
 public class CreateJsonObjEx {
-	public static void main(String a[]){
-        
-        JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
+	
+	private static void test() {
+		JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
+		jsonBuilder.add("name", "sample");
+		JsonArrayBuilder plnArrBld = Json.createArrayBuilder();
+
+		JsonObjectBuilder arrayElementOne =Json.createObjectBuilder();
+		arrayElementOne.add("setId", 1);
+		arrayElementOne.add("setDef2", "xyz");
+		JsonObjectBuilder arrayElementTwo =Json.createObjectBuilder();
+		arrayElementTwo.add("setId", 2);
+		arrayElementTwo.add("setDef2", "setDef2");
+		/*
+		 * JsonArrayBuilder arrayElementOneArray =Json.createArrayBuilder();
+		 * JsonObjectBuilder arrayElementOneArrayElementOne =
+		 * Json.createObjectBuilder(); arrayElementOneArrayElementOne.add("name",
+		 * "ABC"); arrayElementOneArrayElementOne.add("type", "STRING");
+		 * 
+		 * JsonObjectBuilder arrayElementOneArrayElementTwo =
+		 * Json.createObjectBuilder(); arrayElementOneArrayElementTwo.add("name",
+		 * "XYZ"); arrayElementOneArrayElementTwo.add("type", "STRING");
+		 * 
+		 * arrayElementOneArray.add(arrayElementOneArrayElementOne);
+		 * arrayElementOneArray.add(arrayElementOneArrayElementTwo);
+		 */
+
+		
+		
+		plnArrBld.add(arrayElementOne);
+		plnArrBld.add(arrayElementTwo);
+		
+		jsonBuilder.add("def", plnArrBld);
+		JsonObject empObj = jsonBuilder.build();
+		StringWriter strWtr = new StringWriter();
+		JsonWriter jsonWtr = Json.createWriter(strWtr);
+		jsonWtr.writeObject(empObj);
+		jsonWtr.close();
+		String ret = strWtr.toString();
+		System.out.println(ret);
+	}
+	
+	private static void test1() {
+		JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
         jsonBuilder.add("dist_refid", "");
         jsonBuilder.add("date_updated", "2019-07-19T00:00:00");
          
@@ -44,6 +84,11 @@ public class CreateJsonObjEx {
         jsonWtr.close();
          
         System.out.println(strWtr.toString());
+	}
+	public static void main(String a[]){
+        
+		test();
+        
         
         
     }

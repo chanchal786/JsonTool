@@ -18,7 +18,7 @@ public class CopyExcelSheet {
 
 		CopyExcelSheet ces = new CopyExcelSheet();
 
-		String excelFilePath = "C:/Users/MahiWay/Desktop/Tool/Test1.xlsx";
+		String excelFilePath = "D:\\chanchal\\AutomationTool\\Spring Tool Suite 4\\JsonTool\\JsonTool\\Test1.xlsx";
 //"C:\Users\MahiWay\Desktop\Tool\Test1.xlsx"
 		String copySheetName = "Sheet1";
 
@@ -28,7 +28,7 @@ public class CopyExcelSheet {
 
 	}
 
-	private List<List<String>> getExcelData(String excelFilePath, String excelSheetName, int startRow, int endRow) {
+	public static List<List<String>> getExcelData(String excelFilePath, String excelSheetName, int startRow, int endRow) {
 		List<List<String>> ret = new ArrayList();
 		if (excelFilePath != null && !"".equals(excelFilePath.trim()) && excelSheetName != null
 				&& !"".equals(excelSheetName.trim())) {

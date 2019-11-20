@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -23,7 +22,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import net.sf.json.JSONObject;
+
 //https://www.journaldev.com/2315/java-json-example
 //http://www.appsdeveloperblog.com/java-into-json-json-into-java-all-possible-examples/
 public class ReadExcelDataWithDynamicColumn {
@@ -36,24 +35,21 @@ public class ReadExcelDataWithDynamicColumn {
 		if (dataTable != null) {
 			int rowCount = dataTable.size();
 			if (rowCount > 1) {	
-				JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 				List<String> headerRow = dataTable.get(0);
 				int columnCount = headerRow.size();
+				JsonArrayBuilder pbuilder = Json.createArrayBuilder();
 				for (int i = 1; i < rowCount; i++) {
-					JsonArrayBuilder pbuilder = Json.createArrayBuilder();
 					// Get current row data.
+					JsonObjectBuilder jsonBuilder1 = Json.createObjectBuilder();
 					List<String> dataRow = dataTable.get(i);
 					for (int j = 0; j < columnCount; j++) {
 						String columnName = headerRow.get(j);
-						String columnValue = dataRow.get(j);
-						JsonObject json = Json.createObjectBuilder().add(columnName, columnValue).build();
-					//	jsonArrayBuilder.add(json);
-						pbuilder.add(json);
+						String columnValue = dataRow.get(j);		
+						jsonBuilder1.add(columnName, columnValue);
 					}
-					jsonArrayBuilder.add(pbuilder);
+					pbuilder.add(jsonBuilder1);
 				}
-				JsonArray jsonArray = jsonArrayBuilder.build();
-				jsonBuilder.add("whitelisted_ids", jsonArray);
+				jsonBuilder.add("whitelisted_ids", pbuilder);
 				JsonObject empObj = jsonBuilder.build();
 				StringWriter strWtr = new StringWriter();
 				JsonWriter jsonWtr = Json.createWriter(strWtr);
@@ -70,7 +66,7 @@ public class ReadExcelDataWithDynamicColumn {
 
 	public static void main(String[] args) {
 		// You can specify your excel file path.
-		String excelFilePath = "C:/Users/MahiWay/Desktop/Tool/Json.xls";
+		String excelFilePath = "D:\\chanchal\\AutomationTool\\Spring Tool Suite 4\\JsonTool\\JsonTool\\Json.xls";
 
 		// "C:\Users\MahiWay\Desktop\Test.xls"
 
@@ -110,9 +106,9 @@ public class ReadExcelDataWithDynamicColumn {
 					// Generate JSON format of above sheet data and write to a JSON file.
 
 					dataToJSON(sheetDataTable);
-//					String jsonString = getJSONStringFromList(sheetDataTable);
-//					String jsonFileName = sheet.getSheetName() + ".json";
-//					writeStringToFile(jsonString, jsonFileName);
+					String jsonString = dataToJSON(sheetDataTable);
+					String jsonFileName = sheet.getSheetName() + ".json";
+					writeStringToFile(jsonString, jsonFileName);
 
 					// Generate text table format of above sheet data and write to a text file.
 					/*
@@ -184,43 +180,33 @@ public class ReadExcelDataWithDynamicColumn {
 	}
 
 	/* Return a JSON string from the string list. */
-	private static String getJSONStringFromList(List<List<String>> dataTable) {
-		String ret = "";
-
-		if (dataTable != null) {
-			int rowCount = dataTable.size();
-
-			if (rowCount > 1) {
-				// Create a JSONObject to store table data.
-				JSONObject tableJsonObject = new JSONObject();
-
-				// The first row is the header row, store each column name.
-				List<String> headerRow = dataTable.get(0);
-
-				int columnCount = headerRow.size();
-
-				// Loop in the row data list.
-				JSONObject rowJsonObject = new JSONObject();
-				for (int i = 1; i < rowCount; i++) {
-					// Get current row data.
-					List<String> dataRow = dataTable.get(i);
-					for (int j = 0; j < columnCount; j++) {
-						String columnName = headerRow.get(j);
-						String columnValue = dataRow.get(j);
-						rowJsonObject.put(columnName, columnValue);
-					}
-
-					tableJsonObject.put("Row " + i, rowJsonObject);
-				}
-
-				// Return string format data of JSONObject object.
-				ret = tableJsonObject.toString().replaceAll("Row ([0-9]{1})", "");
-
-			}
-		}
-		return ret;
-	}
-
+	/*
+	 * private static String getJSONStringFromList(List<List<String>> dataTable) {
+	 * String ret = "";
+	 * 
+	 * if (dataTable != null) { int rowCount = dataTable.size();
+	 * 
+	 * if (rowCount > 1) { // Create a JSONObject to store table data. JSONObject
+	 * tableJsonObject = new JSONObject();
+	 * 
+	 * // The first row is the header row, store each column name. List<String>
+	 * headerRow = dataTable.get(0);
+	 * 
+	 * int columnCount = headerRow.size();
+	 * 
+	 * // Loop in the row data list. JSONObject rowJsonObject = new JSONObject();
+	 * for (int i = 1; i < rowCount; i++) { // Get current row data. List<String>
+	 * dataRow = dataTable.get(i); for (int j = 0; j < columnCount; j++) { String
+	 * columnName = headerRow.get(j); String columnValue = dataRow.get(j);
+	 * rowJsonObject.put(columnName, columnValue); }
+	 * 
+	 * tableJsonObject.put("Row " + i, rowJsonObject); }
+	 * 
+	 * // Return string format data of JSONObject object. ret =
+	 * tableJsonObject.toString().replaceAll("Row ([0-9]{1})", "");
+	 * 
+	 * } } return ret; }
+	 */
 	/* Return a text table string from the string list. */
 	private static String getTextTableStringFromList(List<List<String>> dataTable) {
 		StringBuffer strBuf = new StringBuffer();
@@ -259,7 +245,7 @@ public class ReadExcelDataWithDynamicColumn {
 	private static void writeStringToFile(String data, String fileName) {
 		try {
 
-			String filePath = "C:/Users/MahiWay/Desktop/Tool/" + fileName;
+			String filePath = "D:\\chanchal\\AutomationTool\\Spring Tool Suite 4\\JsonTool\\JsonTool" + fileName;
 
 			// Create File, FileWriter and BufferedWriter object.
 			File file = new File(filePath);
