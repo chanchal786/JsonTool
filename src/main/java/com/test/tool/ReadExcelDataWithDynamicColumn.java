@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -56,7 +58,11 @@ public class ReadExcelDataWithDynamicColumn {
 			throws JsonGenerationException, JsonMappingException, IOException {
 		JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
 		jsonBuilder.add("dist_refid", "");
-		jsonBuilder.add("date_updated", "2019-07-19T00:00:00");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		jsonBuilder.add("date_updated", dtf.format(now));
+
+		System.out.println(dtf.format(now));
 		String ret = "";
 		String indented = "";
 		if (dataTable != null) {
