@@ -7,44 +7,92 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
+/*
+ * @Chanchal CSK
+ * 
+ * 
+ */
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 5cb85a51e0255dbf9f9438876adc0e9c8cd9591b
 //https://www.journaldev.com/2315/java-json-example
 //http://www.appsdeveloperblog.com/java-into-json-json-into-java-all-possible-examples/
 public class ReadExcelDataWithDynamicColumn {
 
-	private static String dataToJSON(List<List<String>> dataTable) {
+	public static void main(String[] args) {
+		Scanner input = new Scanner(System.in);
+		System.out.println("Enter file path e.g  .xlsx file");
+		String excelFilePath = input.nextLine();
+		CopyExcelSheet ces = new CopyExcelSheet();
+		// String excelFilePath = "C:/Users/MahiWay/Desktop/Tool/Test1.xlsx";
+		String copySheetName = "Sheet1";
+		List<List<String>> selectedRowDataList = ces.getExcelData(excelFilePath, copySheetName);
+		ces.createExcelSheetWithData(excelFilePath, selectedRowDataList);
+
+		creteJSONFileFromExcel(excelFilePath);
+	}
+
+	private static String dataToJSON(List<List<String>> dataTable)
+			throws JsonGenerationException, JsonMappingException, IOException {
 		JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
 		jsonBuilder.add("dist_refid", "");
-		jsonBuilder.add("date_updated", "2019-07-19T00:00:00");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		jsonBuilder.add("date_updated", dtf.format(now));
+
+		System.out.println(dtf.format(now));
 		String ret = "";
+		String indented = "";
 		if (dataTable != null) {
 			int rowCount = dataTable.size();
+<<<<<<< HEAD
 			if (rowCount > 1) {	
+=======
+			if (rowCount > 1) {
+>>>>>>> 5cb85a51e0255dbf9f9438876adc0e9c8cd9591b
 				List<String> headerRow = dataTable.get(0);
 				int columnCount = headerRow.size();
 				JsonArrayBuilder pbuilder = Json.createArrayBuilder();
 				for (int i = 1; i < rowCount; i++) {
+<<<<<<< HEAD
 					// Get current row data.
+=======
+>>>>>>> 5cb85a51e0255dbf9f9438876adc0e9c8cd9591b
 					JsonObjectBuilder jsonBuilder1 = Json.createObjectBuilder();
 					List<String> dataRow = dataTable.get(i);
 					for (int j = 0; j < columnCount; j++) {
 						String columnName = headerRow.get(j);
+<<<<<<< HEAD
 						String columnValue = dataRow.get(j);		
+=======
+						String columnValue = dataRow.get(j);
+>>>>>>> 5cb85a51e0255dbf9f9438876adc0e9c8cd9591b
 						jsonBuilder1.add(columnName, columnValue);
 					}
 					pbuilder.add(jsonBuilder1);
@@ -55,15 +103,18 @@ public class ReadExcelDataWithDynamicColumn {
 				JsonWriter jsonWtr = Json.createWriter(strWtr);
 				jsonWtr.writeObject(empObj);
 				jsonWtr.close();
-				ret = strWtr.toString();
-				
-		        System.out.println(ret);
-//				ret = tableJsonObject.toString().replaceAll("Row ([0-9]{1})", "");
+				ret = strWtr.toString().replace("\\", "").replace("\"[", "[").replace("]\"", "]");
+				System.out.println(ret);
+				ObjectMapper mapper = new ObjectMapper();
+				Object json = mapper.readValue(ret, Object.class);
+				indented = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+//				System.out.println(indented);
 			}
 		}
-		return ret;
+		return indented;
 	}
 
+<<<<<<< HEAD
 	public static void main(String[] args) {
 		// You can specify your excel file path.
 		String excelFilePath = "D:\\chanchal\\AutomationTool\\Spring Tool Suite 4\\JsonTool\\JsonTool\\Json.xls";
@@ -76,20 +127,15 @@ public class ReadExcelDataWithDynamicColumn {
 	}
 
 	private static void creteJSONAndTextFileFromExcel(String filePath) {
+=======
+	private static void creteJSONFileFromExcel(String filePath) {
+>>>>>>> 5cb85a51e0255dbf9f9438876adc0e9c8cd9591b
 		try {
-			/* First need to open the file. */
 			FileInputStream fInputStream = new FileInputStream(filePath.trim());
 
-			/* Create the workbook object to access excel file. */
-			// Workbook excelWookBook = new XSSFWorkbook(fInputStream)
-			/*
-			 * Because this example use .xls excel file format, so it should use
-			 * HSSFWorkbook class. For .xlsx format excel file use XSSFWorkbook class.
-			 */;
-			Workbook excelWorkBook = new HSSFWorkbook(fInputStream);
-
-			// Get all excel sheet count.
+			Workbook excelWorkBook = new XSSFWorkbook(fInputStream);
 			int totalSheetNumber = excelWorkBook.getNumberOfSheets();
+<<<<<<< HEAD
 
 			// Loop in all excel sheet.
 			for (int i = 0; i < totalSheetNumber; i++) {
@@ -117,68 +163,64 @@ public class ReadExcelDataWithDynamicColumn {
 					 * writeStringToFile(textTableString, textTableFileName);
 					 */
 
+=======
+			// for (int i = 0; i < totalSheetNumber; i++) {
+//				Sheet sheet = excelWorkBook.getSheetAt(i);
+			Sheet sheet = excelWorkBook.getSheetAt(1);
+			String sheetName = sheet.getSheetName();
+
+			if (sheetName != null && sheetName.length() > 0) {
+				List<List<String>> sheetDataTable = getSheetDataList(sheet);
+				String jsonString = dataToJSON(sheetDataTable);
+
+				System.out.println(filePath);
+				Pattern patternFilepath = Pattern.compile("(.*/)(.*)(.xlsx)");
+				Matcher matcherFilepath = patternFilepath.matcher(filePath);
+				String jsonFilePath = "";
+				if (matcherFilepath.find()) {
+					jsonFilePath = matcherFilepath.group(1);
+>>>>>>> 5cb85a51e0255dbf9f9438876adc0e9c8cd9591b
 				}
+				System.out.println(jsonFilePath);
+				String jsonFileName = jsonFilePath + sheet.getSheetName() + ".json";
+				writeStringToFile(jsonString, jsonFileName);
 			}
-			// Close excel work book object.
+			// }
 			excelWorkBook.close();
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
 	}
 
-	/*
-	 * Return sheet data in a two dimensional list. Each element in the outer list
-	 * is represent a row, each element in the inner list represent a column. The
-	 * first row is the column name row.
-	 */
 	private static List<List<String>> getSheetDataList(Sheet sheet) {
 		List<List<String>> ret = new ArrayList<List<String>>();
-
-		// Get the first and last sheet row number.
 		int firstRowNum = sheet.getFirstRowNum();
 		int lastRowNum = sheet.getLastRowNum();
-
 		if (lastRowNum > 0) {
-			// Loop in sheet rows.
 			for (int i = firstRowNum; i < lastRowNum + 1; i++) {
-				// Get current row object.
 				Row row = sheet.getRow(i);
-
-				// Get first and last cell number.
 				int firstCellNum = row.getFirstCellNum();
 				int lastCellNum = row.getLastCellNum();
-
-				// Create a String list to save column data in a row.
 				List<String> rowDataList = new ArrayList<String>();
-
-				// Loop in the row cells.
 				for (int j = firstCellNum; j < lastCellNum; j++) {
-					// Get current cell.
 					Cell cell = row.getCell(j);
-
-					// Get cell type.
 					int cellType = cell.getCellType().getCode();
-
 					if (cellType == CellType.NUMERIC.getCode()) {
 						double numberValue = cell.getNumericCellValue();
-
 						String stringCellValue = BigDecimal.valueOf(numberValue).toPlainString();
-
 						rowDataList.add(stringCellValue);
-
 					} else if (cellType == CellType.STRING.getCode()) {
 						String cellValue = cell.getStringCellValue();
 						rowDataList.add(cellValue);
 					}
 				}
-
-				// Add current row data list in the return list.
 				ret.add(rowDataList);
 			}
 		}
 		return ret;
 	}
 
+<<<<<<< HEAD
 	/* Return a JSON string from the string list. */
 	/*
 	 * private static String getJSONStringFromList(List<List<String>> dataTable) {
@@ -250,20 +292,18 @@ public class ReadExcelDataWithDynamicColumn {
 			// Create File, FileWriter and BufferedWriter object.
 			File file = new File(filePath);
 
+=======
+	private static void writeStringToFile(String data, String jsonFilePath) {
+		try {
+			// String filePath = "C:/Users/MahiWay/Desktop/Tool/" + fileName;
+			File file = new File(jsonFilePath);
+>>>>>>> 5cb85a51e0255dbf9f9438876adc0e9c8cd9591b
 			FileWriter fw = new FileWriter(file);
-
 			BufferedWriter buffWriter = new BufferedWriter(fw);
-
-			// Write string data to the output file, flush and close the buffered writer
-			// object.
 			buffWriter.write(data);
-
 			buffWriter.flush();
-
 			buffWriter.close();
-
-			System.out.println(filePath + " has been created.");
-
+			System.out.println(jsonFilePath + " has been created.");
 		} catch (IOException ex) {
 			System.err.println(ex.getMessage());
 		}
